@@ -41,5 +41,38 @@ B3: Truy vấn
     - Nếu ở 2 bên, tìm cả 2 bên so sánh với nhau
 '''
 
+class Node:
+    def __init__(self, a, b):
+        self.a, self.b = a, b
+        self.elem = -1000000000
+        if a + 1 == b:
+            self.left = self.right = None
+        else:
+            self.left = Node(a, (a + b) // 2)
+            self.right = Node((a + b) // 2, b)
+def update(H, i, x):
+    if H.elem < x:
+        H.elem = x
+    if H.left and i < H.left.b:
+        update(H.left, i, x)
+    elif H.right:
+        update(H.right, i, x)
+def get(H, L, R):
+    if H.a == L and H.b == R:
+        return H.elem
+    if R <= H.left.b:
+        return get(H.left, L, R)
+    if L >= H.right.a:
+        return get(H.right, L, R)
+    return max(get(H.left, L, H.left.b), get(H.right, H.right.a, R))
+
+if __name__ == '__main__':
+    n, m = map(int, input().split())
+    root = Node(1, n + 1)
+    for i, x in enumerate(map(int, input().split()), 1):
+        update(root, i, x)
+    for i in range(m):
+        L, R = map(int, input().split())
+        print(get(root, L, R + 1))
 
 
